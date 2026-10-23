@@ -1,15 +1,15 @@
-# Виртуальное окружение
 .venv/
 
-# Кэш Python
 __pycache__/
+
 *.pyc
 
-# Кэш инструментов
 .ruff_cache/
 
 .pytest_cache/
 
-# Собранные пакеты
 dist/
+
 *.egg-info/
+
+db_meta.json
