@@ -52,11 +52,49 @@ uv run project
 
 | Команда | Описание |
 |---|---|
-| `create_table users name:str age:int` | Создать таблицу |
-| `drop_table users` | Удалить таблицу |
+| `create_table users name:str age:int active:bool` | Создать таблицу |
+| `drop_table users` | Удалить таблицу вместе с записями |
 | `list_tables` | Показать существующие таблицы |
+| `info users` | Показать структуру таблицы и количество записей |
+| `insert into users values ("Alex", 30, true)` | Добавить запись |
+| `select from users` | Показать все записи |
+| `select from users where age = 30` | Найти записи по условию |
+| `update users set age = 31 where ID = 1` | Изменить записи |
+| `delete from users where ID = 1` | Удалить записи по условию |
 | `help` | Показать справку |
-| `exit` | Завершить приложение |
+| `exit` | Завершить программу |
+
+## Работа с данными
+
+Приложение поддерживает три типа данных: `int`, `str`, `bool`.
+
+При создании таблицы автоматически добавляется системный столбец `ID:int`. При добавлении записи идентификатор формируется автоматически.
+
+Структура таблиц хранится в `db_meta.json`, а записи каждой таблицы сохраняются в отдельных JSON-файлах в папке `data/`.
+
+Приложение поддерживает основные CRUD-операции: создание, чтение, изменение и удаление записей.
+
+Для команд `select`, `update` и `delete` поддерживаются простые условия `where` с оператором `=`.
+
+Данные сохраняются между запусками программы.
+
+## Пример работы с базой данных
+
+```text
+create_table users name:str age:int active:bool
+insert into users values ("Alex", 30, true)
+insert into users values ("Maria", 25, false)
+
+select from users
+select from users where age = 30
+
+update users set age = 31 where ID = 1
+delete from users where ID = 2
+
+info users
+drop_table users
+exit
+```
 
 ## Пример использования
 
