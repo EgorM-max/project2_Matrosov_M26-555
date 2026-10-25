@@ -235,5 +235,5 @@ make publish-check
 Ниже представлена запись работы приложения `primitive_db`,
 созданная с помощью asciinema.
 
-[![Демонстрация primitive_db](https://asciinema.org/a/Wgbwqs512yWp8qDn.svg)](https://asciinema.org/a/Wgbwqs512yWp8qDn)
 
+[![Демонстрация primitive_db](https://asciinema.org/a/Wgbwqs512yWp8qDn.png)](https://asciinema.org/a/Wgbwqs512yWp8qDn)
