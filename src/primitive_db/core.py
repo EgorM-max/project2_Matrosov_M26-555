@@ -1,14 +1,16 @@
+"""Основные операции с таблицами и записями базы данных."""
+from primitive_db.constants import VALID_TYPES
 from primitive_db.decorators import confirm_action, handle_db_errors, log_time
 from primitive_db.utils import load_table_data
 
 
 @handle_db_errors
 def create_table(metadata, table_name, columns):
+    """Создать таблицу с указанными столбцами и типами данных."""
     if table_name in metadata:
         print(f'Ошибка: Таблица "{table_name}" уже существует.')
         return metadata
 
-    valid_types = ("int", "str", "bool")
     table_columns = ["ID:int"]
     column_names = {"ID"}
 
@@ -21,7 +23,7 @@ def create_table(metadata, table_name, columns):
 
         column_name, column_type = parts
 
-        if not column_name or column_type not in valid_types:
+        if not column_name or column_type not in VALID_TYPES:
             print(f"Некорректное значение: {column}. Попробуйте снова.")
             return metadata
 
@@ -45,6 +47,7 @@ def create_table(metadata, table_name, columns):
 @handle_db_errors
 @confirm_action("удаление таблицы") 
 def drop_table(metadata, table_name):
+    """Удалить таблицу из метаданных базы данных."""
     if table_name not in metadata:
         print(f'Ошибка: Таблица "{table_name}" не существует.')
         return metadata
@@ -59,6 +62,7 @@ def drop_table(metadata, table_name):
 @handle_db_errors
 @log_time
 def insert(metadata, table_name, values):
+    """Добавить запись в таблицу с автоматическим присвоением ID."""
     if table_name not in metadata:
         print(f'Ошибка: Таблица "{table_name}" не существует.')
         return None
@@ -111,6 +115,7 @@ def insert(metadata, table_name, values):
 @handle_db_errors
 @log_time
 def select(table_data, where_clause=None):
+    """Получить записи таблицы с необязательной фильтрацией."""
     if where_clause is None:
         return table_data
 
@@ -132,6 +137,7 @@ def select(table_data, where_clause=None):
 
 @handle_db_errors
 def update(table_data, set_clause, where_clause, columns):
+    """Изменить значения записей, соответствующих условию."""
     column_types = {}
 
     for column in columns:
@@ -188,6 +194,7 @@ def update(table_data, set_clause, where_clause, columns):
 @handle_db_errors
 @confirm_action("удаление таблицы") 
 def delete(table_data, where_clause):
+    """Удалить записи таблицы, соответствующие условию."""
     remaining_records = []
     deleted_count = 0
 
@@ -211,6 +218,7 @@ def delete(table_data, where_clause):
 
 @handle_db_errors
 def get_table_info(metadata, table_name):
+    """Вывести структуру таблицы и количество записей."""
     if table_name not in metadata:
         print(f'Ошибка: Таблица "{table_name}" не существует.')
         return None
@@ -226,3 +234,4 @@ def get_table_info(metadata, table_name):
         print(f"- {column_name} ({column_type})")
 
     print(f"Количество записей: {len(table_data)}")
+    

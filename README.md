@@ -188,3 +188,52 @@ src/
 После успешных операций изменения данных (`insert`, `update`, `delete`, `create_table`, `drop_table`) кеш очищается.
 
 Кеш хранится в оперативной памяти и не сохраняется между запусками программы.
+
+## Проверка качества и сборка
+
+Проект использует `uv` для управления зависимостями и запуска приложения, а также Ruff для проверки качества кода.
+
+Установка зависимостей:
+
+```bash
+uv sync
+```
+
+Проверка кода:
+
+```bash
+uv run ruff check .
+```
+
+Запуск приложения:
+
+```bash
+uv run database
+```
+
+Сборка пакета:
+
+```bash
+uv build
+```
+
+Также доступны команды Makefile:
+
+```bash
+make install
+make run
+make lint
+make build
+make publish-check
+```
+
+Команда `make publish-check` проверяет метаданные собранных пакетов с помощью Twine и не публикует проект на PyPI.
+
+
+## Демонстрация работы
+
+Ниже представлена запись работы приложения `primitive_db`,
+созданная с помощью asciinema.
+
+[![Демонстрация primitive_db](https://asciinema.org/a/Wgbwqs512yWp8qDn.svg)](https://asciinema.org/a/Wgbwqs512yWp8qDn)
+

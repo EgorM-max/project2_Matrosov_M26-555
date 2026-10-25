@@ -1,8 +1,10 @@
+"""Интерактивный интерфейс командной строки для управления базой данных."""
 import shlex
 
 import prompt
 from prettytable import PrettyTable
 
+from primitive_db.constants import META_FILE
 from primitive_db.core import (
     create_table,
     delete,
@@ -12,19 +14,20 @@ from primitive_db.core import (
     select,
     update,
 )
+from primitive_db.parser import parse_values, parse_where_clause
 from primitive_db.utils import (
     create_cacher,
     delete_table_data,
     load_metadata,
     load_table_data,
-    parse_values,
-    parse_where_clause,
     save_metadata,
     save_table_data,
 )
 
 
 def print_help():
+    """Вывести справку по доступным командам приложения."""
+
     print("\n***Процесс работы с таблицей***")
     print("Функции:")
     print(
@@ -53,11 +56,13 @@ def print_help():
 
 
 def run():
+    """Запустить интерактивный цикл обработки команд пользователя."""
+    
     cached_select, clear_cache = create_cacher() 
     print_help()
 
     while True:
-        metadata = load_metadata("db_meta.json")
+        metadata = load_metadata(META_FILE)
 
         user_input = prompt.string("\nВведите команду: ")
         try:
@@ -100,7 +105,7 @@ def run():
                 continue
 
             metadata = create_table(metadata, table_name, columns)
-            save_metadata("db_meta.json", metadata)
+            save_metadata(META_FILE, metadata)
 
         elif command == "drop_table":
             if len(args) != 2:
@@ -117,7 +122,7 @@ def run():
             updated_metadata = drop_table(metadata, table_name)
 
             if updated_metadata is not None:
-                save_metadata("db_meta.json", updated_metadata)
+                save_metadata(META_FILE, updated_metadata)
                 delete_table_data(table_name)
                 clear_cache() 
         
