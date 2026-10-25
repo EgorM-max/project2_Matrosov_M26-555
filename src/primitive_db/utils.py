@@ -106,3 +106,37 @@ def delete_table_data(table_name):
 
     if filepath.exists():
         filepath.unlink()
+
+
+
+def create_cacher():
+    cache = {}
+
+    def cached_select(select_func, table_data, where_clause=None):
+        key = json.dumps(
+            [table_data, where_clause],
+            sort_keys=True,
+            ensure_ascii=False,
+        )
+
+        if key in cache:
+            print("Результат получен из кеша.")
+            return [record.copy() for record in cache[key]]
+
+        result = select_func(table_data, where_clause)
+
+        if result is None:
+            return None
+
+        cache[key] = [record.copy() for record in result]
+        print("Результат сохранён в кеш.")
+
+        return result
+
+    def clear_cache():
+        cache.clear()
+        print("Кеш запросов очищен.")
+
+    return cached_select, clear_cache
+
+

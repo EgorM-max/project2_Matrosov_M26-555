@@ -13,6 +13,7 @@ from primitive_db.core import (
     update,
 )
 from primitive_db.utils import (
+    create_cacher,
     delete_table_data,
     load_metadata,
     load_table_data,
@@ -52,6 +53,7 @@ def print_help():
 
 
 def run():
+    cached_select, clear_cache = create_cacher() 
     print_help()
 
     while True:
@@ -111,9 +113,13 @@ def run():
                 print(f'Ошибка: Таблица "{table_name}" не существует.')
                 continue
 
-            metadata = drop_table(metadata, table_name)
-            save_metadata("db_meta.json", metadata)
-            delete_table_data(table_name)
+            
+            updated_metadata = drop_table(metadata, table_name)
+
+            if updated_metadata is not None:
+                save_metadata("db_meta.json", updated_metadata)
+                delete_table_data(table_name)
+                clear_cache() 
         
         elif command == "insert":
             parts = user_input.strip().split(maxsplit=3)
@@ -151,6 +157,7 @@ def run():
 
             if table_data is not None:
                 save_table_data(table_name, table_data)
+                clear_cache() 
             
         
         elif command == "select":
@@ -193,8 +200,13 @@ def run():
                     print(f'Ошибка: Столбец "{column_name}" не существует.')
                     continue
 
+            
             table_data = load_table_data(table_name)
-            records = select(table_data, where_clause)
+            records = cached_select(select, table_data, where_clause)
+
+            if records is None:
+                print("Не удалось получить записи таблицы.")
+                continue
 
             table = PrettyTable()
             table.field_names = columns
@@ -245,6 +257,7 @@ def run():
 
             if updated_data is not None:
                 save_table_data(table_name, updated_data)
+                clear_cache() 
             
         elif command == "delete":
             parts = user_input.strip().split(maxsplit=4)
@@ -293,9 +306,13 @@ def run():
                 )
                 continue
 
+            
             table_data = load_table_data(table_name)
             remaining_data = delete(table_data, where_clause)
-            save_table_data(table_name, remaining_data)
+
+            if remaining_data is not None:
+                save_table_data(table_name, remaining_data)
+                clear_cache() 
         
         elif command == "info":
             if len(args) != 2:
